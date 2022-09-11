@@ -25,14 +25,14 @@ else:
 ##############gun batimi gor##################
 
 ########MQTT Iletisim protokolu##################
-broker ="XXXXXXXXXXXXXX"
-port = XXXX
+broker ="XXX.XXX.XXX.XXX"
+port = XXXXX
 
 client = mqtt.Client("Temperature_Inside")
 client.connect(broker, port)
 ################################################
 
-cap = cv2.VideoCapture('XXXXXXXXXXXXXXX')
+cap = cv2.VideoCapture('http://XXX.XXX.XXX.XXX:18086')
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1024)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 768)
 
@@ -76,39 +76,48 @@ while True:
     cv2.putText(frame, str(averaj), (15, 50), cv2.FONT_ITALIC, 1, (255, 255, 255), 1)
     ################################################################################
 ############# time modülü ile zaman kontrolü yapılır. Gündüz ise aşağıdaki kod çalışır. #############
-    if (tnow) < today_ss:
-        #gunduz
-        if averaj > 149:
-            mama = "mama yetersiz"
-            client.publish("mama", mama)
-            cv2.putText(frame, mama, (cx - 150, 70), 0, 1, (0, 0, 255), 2)
-            cv2.putText(frame, "Gunduz zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
-            cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 0, 255), 2)
-            cv2.putText(frame, mama, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
-        elif averaj < 150:
-            mama2 = "mama var"
-            client.publish("mama", mama2)
-            # print("Vega mama durumu " + str(mama2) + " baslik ile yayinda")
-            cv2.putText(frame, mama2, (cx - 150, 70), 0, 0.5, (0, 255, 0), 1)
-            cv2.putText(frame, "Gunduz zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
-            cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 255, 0), 2)
-            cv2.putText(frame, mama2, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 1)
-    if (tnow) > today_ss:
-        #gece
-        if averaj > 150:
-            mama = "mama yetersiz"
-            client.publish("mama", mama)
-            cv2.putText(frame, mama, (cx - 150, 70), 0, 1, (0, 0, 255), 2)
-            cv2.putText(frame, "Aksam zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
-            cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 0, 255), 2)
-            cv2.putText(frame, mama, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
-        elif averaj < 149:
-            mama2 = "mama var"
-            client.publish("mama", mama2)
-            cv2.putText(frame, mama2, (cx - 150, 70), 0, 0.5, (0, 255, 0), 1)
-            cv2.putText(frame, "Aksam zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
-            cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 255, 0), 2)
-            cv2.putText(frame, mama2, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 1)
+    if averaj > 10:
+        if (today_sr < tnow) and (tnow < today_ss):
+            #gunduz
+            if averaj > 149:
+                mama = "mama yetersiz"
+                client.publish("mama", mama)
+                cv2.putText(frame, mama, (cx - 150, 70), 0, 1, (0, 0, 255), 2)
+                cv2.putText(frame, "Gunduz zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
+                cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 0, 255), 2)
+                cv2.putText(frame, mama, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
+            elif averaj < 150:
+                mama2 = "mama var"
+                client.publish("mama", mama2)
+                # print("Vega mama durumu " + str(mama2) + " baslik ile yayinda")
+                cv2.putText(frame, mama2, (cx - 150, 70), 0, 0.5, (0, 255, 0), 1)
+                cv2.putText(frame, "Gunduz zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
+                cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 255, 0), 2)
+                cv2.putText(frame, mama2, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 1)
+        if (today_sr > tnow) and (tnow < today_ss):
+            #gece
+            if averaj >= 26:
+                mama = "mama yetersiz"
+                client.publish("mama", mama)
+                cv2.putText(frame, mama, (cx - 150, 70), 0, 1, (0, 0, 255), 2)
+                cv2.putText(frame, "Aksam zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
+                cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 0, 255), 2)
+                cv2.putText(frame, mama, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 1)
+            elif averaj <= 25:
+                mama2 = "mama var"
+                client.publish("mama", mama2)
+                cv2.putText(frame, mama2, (cx - 150, 70), 0, 0.5, (0, 255, 0), 1)
+                cv2.putText(frame, "Aksam zamani algilandi.", (10, 580), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
+                cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (0, 255, 0), 2)
+                cv2.putText(frame, mama2, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 255, 0), 1)
+    if averaj < 10:
+        mama3 = "Yetersiz isik, saglikli veri alinamaz."
+        client.publish("mama", mama3)
+        # print("Vega mama durumu " + str(mama2) + " baslik ile yayinda")
+        cv2.putText(frame, mama3, (cx - 150, 85), 0, 0.5, (255, 255, 255), 1)
+        cv2.putText(frame, "Yetersiz isik algilandi.", (10, 560), cv2.FONT_ITALIC, 0.5, (255, 255, 255), 1)
+        cv2.rectangle(frame, (cx - 4, cy - 6), (cxx + 5, cyy + 5), (255, 255, 0), 2)
+        cv2.putText(frame, mama3, (cx, cy - 10), cv2.FONT_HERSHEY_COMPLEX, 0.5, (255, 255, 0), 1)
 ############################################################################################################
 
     cv2.imshow("Frame", frame)
